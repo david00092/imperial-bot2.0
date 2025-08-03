@@ -726,7 +726,7 @@ client.on("messageCreate", async (message) => {
       const embed = new EmbedBuilder()
         .setTitle("Lista de Cargos do Servidor")
         .setDescription(chunk)
-        .setColor("Blue")
+        .setColor("#FF004C")
         .setTimestamp()
         .setThumbnail(await getGuildIcon(message.guild));
 
@@ -766,7 +766,7 @@ client.on("messageCreate", async (message) => {
         },
         { name: "!ajuda", value: "Mostra essa mensagem de ajuda." },
       )
-      .setColor("Yellow")
+      .setColor("#FF004C")
       .setTimestamp()
       .setThumbnail(await getGuildIcon(message.guild));
     await message.channel.send({ embeds: [embed] });
