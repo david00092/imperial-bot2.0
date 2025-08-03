@@ -37,6 +37,9 @@ const allowedRoles = ["1398885528358748250", "1398885530388795575"]; // IDs dos 
 const logChannelId = "1398886461025030235"; // ID do canal de logs
 const autoRoleId = "1398885680771497984"; // ID do cargo automático ao entrar
 const ticketSupportRoleId = "1398885572738682900"; // cargo que pode fechar ticket
+const requestChannelId = "1398886110729470082"; // Ex: 123456789012345678
+const reviewRoleId = "1398885508851175515"; // Ex: 987654321098765432
+
 
 // Tickets
 const ticketOpenChannelId = "1398886141783965737"; // canal do menu para abrir tickets
@@ -308,6 +311,42 @@ client.on("interactionCreate", async (interaction) => {
       return interaction.reply({
         content: "Você não tem permissão para fechar tickets.",
         ephemeral: true,
+  const [action, userId] = interaction.customId.split("_");
+
+  if (["aprovar", "reprovar"].includes(action)) {
+    if (!interaction.member.roles.cache.has(reviewRoleId)) {
+      return interaction.reply({
+        content: "Você não tem permissão para aprovar ou reprovar.",
+        ephemeral: true,
+      });
+    }
+
+    const user = await interaction.guild.members.fetch(userId).catch(() => null);
+    if (!user) {
+      return interaction.reply({
+        content: "Usuário não encontrado.",
+        ephemeral: true,
+      });
+    }
+
+    const embed = new EmbedBuilder()
+      .setTitle(`Solicitação ${action === "aprovar" ? "Aprovada" : "Reprovada"}`)
+      .setDescription(
+        `A solicitação de ${user} foi **${action === "aprovar" ? "aprovada" : "reprovada"}** por ${interaction.user}.`
+      )
+      .setColor(action === "aprovar" ? "Green" : "Red")
+      .setTimestamp()
+      .setThumbnail(await getGuildIcon(interaction.guild));
+
+    await interaction.update({
+      content: `Solicitação ${action === "aprovar" ? "aprovada" : "reprovada"} por ${interaction.user}`,
+      embeds: [embed],
+      components: [],
+    });
+
+    sendLog(interaction.guild, embed);
+  }
+
       });
     }
     await interaction.reply({
@@ -776,6 +815,58 @@ client.on("messageCreate", async (message) => {
       .setThumbnail(await getGuildIcon(message.guild));
     await message.channel.send({ embeds: [embed] });
   }
+else if (command === "solicitar") {
+  const motivo = args.join(" ");
+  if (!motivo) {
+    return replyEmbed(
+      new EmbedBuilder()
+        .setDescription("Use: `!solicitar motivo da solicitação`")
+        .setColor("Red")
+        .setThumbnail(await getGuildIcon(message.guild)),
+    );
+  }
+
+  const requestChannel = message.guild.channels.cache.get(requestChannelId);
+  if (!requestChannel) {
+    return replyEmbed(
+      new EmbedBuilder()
+        .setDescription("Canal de solicitações não encontrado.")
+        .setColor("Red")
+        .setThumbnail(await getGuildIcon(message.guild)),
+    );
+  }
+
+  const embed = new EmbedBuilder()
+    .setTitle("📨 Nova Solicitação")
+    .addFields(
+      { name: "Solicitante", value: `${message.author}`, inline: true },
+      { name: "Motivo", value: motivo, inline: false },
+    )
+    .setColor("Blue")
+    .setTimestamp()
+    .setThumbnail(await getGuildIcon(message.guild));
+
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`aprovar_${message.author.id}`)
+      .setLabel("✅ Aprovar")
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId(`reprovar_${message.author.id}`)
+      .setLabel("❌ Reprovar")
+      .setStyle(ButtonStyle.Danger)
+  );
+
+  await requestChannel.send({ embeds: [embed], components: [row] });
+
+  replyEmbed(
+    new EmbedBuilder()
+      .setDescription("Solicitação enviada com sucesso!")
+      .setColor("Green")
+      .setThumbnail(await getGuildIcon(message.guild))
+  );
+}
+
 });
 
 client.login(process.env.TOKEN);
