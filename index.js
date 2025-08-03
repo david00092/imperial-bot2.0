@@ -32,7 +32,7 @@ const client = new Client({
 });
 
 const prefix = process.env.PREFIX || "!";
-const authorizedBotIDs = ["411916947773587456", "987654321098765432"]; // IDs bots autorizados
+const authorizedBotIDs = ["1401240554880110635", "1401240554880110635"]; // IDs bots autorizados
 const allowedRoles = ["1398885528358748250", "1398885530388795575"]; // IDs dos cargos autorizados a usar comandos
 const logChannelId = "1398886461025030235"; // ID do canal de logs
 const autoRoleId = "1398885680771497984"; // ID do cargo automático ao entrar
