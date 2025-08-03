@@ -228,33 +228,38 @@ client.on("ready", async () => {
     return;
   }
 
-  const embed = new EmbedBuilder()
-    .setTitle(" # Sistema de Tickets")
-    .setDescription("Selecione abaixo o tipo de ticket que deseja abrir.")
-    .setColor("#FF004C")
-    .setTimestamp()
-    .setThumbnail(await getGuildIcon(channel.guild));
+const embed = new EmbedBuilder()
+  .setTitle("🎫 Sistema de Tickets")
+  .setDescription(
+    "Olá! 👋\n\nSelecione abaixo o tipo de ticket que deseja abrir. " +
+    "Nossa equipe está pronta para te ajudar!"
+  )
+  .setColor("#FF004C")
+  .setTimestamp()
+  .setThumbnail(await getGuildIcon(channel.guild))
+  .setFooter({ text: "Equipe Imperial Group" });
 
-  const select = new StringSelectMenuBuilder()
-    .setCustomId("select_ticket")
-    .setPlaceholder("Selecione o tipo de ticket que deseja abrir")
-    .addOptions([
-      {
-        label: "💰┋Vendas",
-        description: "Abra um ticket para tratar sobre vendas",
-        value: "vendas",
-      },
-      {
-        label: "❓┋Suporte",
-        description: "Abra um ticket para pedir suporte",
-        value: "suporte",
-      },
-      {
-        label: "⛔┋Denúncia",
-        description: "Abra um ticket para fazer uma denúncia",
-        value: "denuncia",
-      },
-    ]);
+const select = new StringSelectMenuBuilder()
+  .setCustomId("select_ticket")
+  .setPlaceholder("Selecione o tipo de ticket que deseja abrir")
+  .addOptions([
+    {
+      label: "💰 Vendas",
+      description: "Abra um ticket para tratar sobre vendas",
+      value: "vendas",
+    },
+    {
+      label: "❓ Suporte",
+      description: "Abra um ticket para pedir suporte",
+      value: "suporte",
+    },
+    {
+      label: "⛔ Denúncia",
+      description: "Abra um ticket para fazer uma denúncia",
+      value: "denuncia",
+    },
+  ]);
+
 
   const row = new ActionRowBuilder().addComponents(select);
 
