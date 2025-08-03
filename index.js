@@ -275,7 +275,7 @@ const select = new StringSelectMenuBuilder()
 
   if (botMessage) {
     await botMessage.edit({
-      content: "Selecione uma opção para abrir um ticket:",
+      content: "",
       embeds: [embed],
       components: [row],
     });
