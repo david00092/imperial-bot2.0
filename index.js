@@ -174,23 +174,45 @@ client.on("channelDelete", async (channel) => {
   }
 });
 
-// Evento novo membro entra (com filtro de bots autorizados e auto cargo)
 client.on("guildMemberAdd", async (member) => {
-  if (member.user.bot && !authorizedBotIDs.includes(member.id)) {
-    try {
-      await member.kick("Bot não autorizado detectado e removido.");
-      const embed = new EmbedBuilder()
-        .setTitle("Bot não autorizado removido")
-        .setDescription(`Bot: ${member.user.tag} (${member.id})`)
-        .setColor("Red")
-        .setTimestamp()
-        .setThumbnail(await getGuildIcon(member.guild));
-      sendLog(member.guild, embed);
-    } catch (err) {
-      console.error(err);
+  // Se for bot
+  if (member.user.bot) {
+    if (!authorizedBotIDs.includes(member.id)) {
+      try {
+        await member.kick("Bot não autorizado detectado e removido.");
+
+        const embed = new EmbedBuilder()
+          .setTitle("Bot não autorizado removido")
+          .setDescription(`Bot: ${member.user.tag} (${member.id})`)
+          .setColor("Red")
+          .setTimestamp()
+          .setThumbnail(await getGuildIcon(member.guild));
+
+        await sendLog(member.guild, embed);
+      } catch (err) {
+        console.error("Erro ao expulsar bot não autorizado:", err);
+      }
     }
-    return;
+    return; // Sai aqui se for bot (autorizado ou não)
   }
+
+  // Se for humano, adiciona cargo automático
+  try {
+    await member.roles.add(autoRoleId);
+
+    const embed = new EmbedBuilder()
+      .setTitle("Novo membro entrou")
+      .setDescription(`${member.user.tag} recebeu o cargo automático.`)
+      .setColor("Green")
+      .setTimestamp()
+      .setThumbnail(await getGuildIcon(member.guild));
+
+    await sendLog(member.guild, embed);
+  } catch (err) {
+    console.error("Erro ao adicionar cargo automático:", err);
+  }
+});
+
 
   // Dá cargo automático
   try {
