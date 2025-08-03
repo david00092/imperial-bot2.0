@@ -32,7 +32,7 @@ const client = new Client({
 });
 
 const prefix = process.env.PREFIX || "!";
-const authorizedBotIDs = ["1401240554880110635", "1401240554880110635"]; // IDs bots autorizados
+const authorizedBotIDs = ["411916947773587456", "987654321098765432"]; // IDs bots autorizados
 const allowedRoles = ["1398885528358748250", "1398885530388795575"]; // IDs dos cargos autorizados a usar comandos
 const logChannelId = "1398886461025030235"; // ID do canal de logs
 const autoRoleId = "1398885680771497984"; // ID do cargo automático ao entrar
@@ -174,45 +174,23 @@ client.on("channelDelete", async (channel) => {
   }
 });
 
+// Evento novo membro entra (com filtro de bots autorizados e auto cargo)
 client.on("guildMemberAdd", async (member) => {
-  // Se for bot
-  if (member.user.bot) {
-    if (!authorizedBotIDs.includes(member.id)) {
-      try {
-        await member.kick("Bot não autorizado detectado e removido.");
-
-        const embed = new EmbedBuilder()
-          .setTitle("Bot não autorizado removido")
-          .setDescription(`Bot: ${member.user.tag} (${member.id})`)
-          .setColor("Red")
-          .setTimestamp()
-          .setThumbnail(await getGuildIcon(member.guild));
-
-        await sendLog(member.guild, embed);
-      } catch (err) {
-        console.error("Erro ao expulsar bot não autorizado:", err);
-      }
+  if (member.user.bot && !authorizedBotIDs.includes(member.id)) {
+    try {
+      await member.kick("Bot não autorizado detectado e removido.");
+      const embed = new EmbedBuilder()
+        .setTitle("Bot não autorizado removido")
+        .setDescription(`Bot: ${member.user.tag} (${member.id})`)
+        .setColor("Red")
+        .setTimestamp()
+        .setThumbnail(await getGuildIcon(member.guild));
+      sendLog(member.guild, embed);
+    } catch (err) {
+      console.error(err);
     }
-    return; // Sai aqui se for bot (autorizado ou não)
+    return;
   }
-
-  // Se for humano, adiciona cargo automático
-  try {
-    await member.roles.add(autoRoleId);
-
-    const embed = new EmbedBuilder()
-      .setTitle("Novo membro entrou")
-      .setDescription(`${member.user.tag} recebeu o cargo automático.`)
-      .setColor("Green")
-      .setTimestamp()
-      .setThumbnail(await getGuildIcon(member.guild));
-
-    await sendLog(member.guild, embed);
-  } catch (err) {
-    console.error("Erro ao adicionar cargo automático:", err);
-  }
-});
-
 
   // Dá cargo automático
   try {
