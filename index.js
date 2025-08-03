@@ -229,9 +229,9 @@ client.on("ready", async () => {
   }
 
   const embed = new EmbedBuilder()
-    .setTitle("Sistema de Tickets")
+    .setTitle(" # Sistema de Tickets")
     .setDescription("Selecione abaixo o tipo de ticket que deseja abrir.")
-    .setColor("#5865F2")
+    .setColor("#FF004C")
     .setTimestamp()
     .setThumbnail(await getGuildIcon(channel.guild));
 
