@@ -234,7 +234,7 @@ const embed = new EmbedBuilder()
     "Olá! 👋\n\nSelecione abaixo o tipo de ticket que deseja abrir. " +
     "Nossa equipe está pronta para te ajudar!"
   )
-  .setColor("#E54A2F")
+  .setColor("00f5ff")
   .setTimestamp()
   .setThumbnail(await getGuildIcon(channel.guild))
   .setFooter({ text: "Equipe Imperial Group" });
@@ -731,7 +731,7 @@ client.on("messageCreate", async (message) => {
       const embed = new EmbedBuilder()
         .setTitle("Lista de Cargos do Servidor")
         .setDescription(chunk)
-        .setColor("#E54A2F")
+        .setColor("00f5ff")
         .setTimestamp()
         .setThumbnail(await getGuildIcon(message.guild));
 
@@ -771,7 +771,7 @@ client.on("messageCreate", async (message) => {
         },
         { name: "!ajuda", value: "Mostra essa mensagem de ajuda." },
       )
-      .setColor("#E54A2F")
+      .setColor("00f5ff")
       .setTimestamp()
       .setThumbnail(await getGuildIcon(message.guild));
     await message.channel.send({ embeds: [embed] });
