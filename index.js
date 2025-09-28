@@ -372,7 +372,7 @@ client.on("interactionCreate", async (interaction) => {
         .setDescription(
           `Olá ${interaction.user}, aguarde um atendente. Use o botão abaixo para fechar o ticket.`,
         )
-        .setColor("#5865F2")
+        .setColor("#f5c682")
         .setTimestamp()
         .setThumbnail(await getGuildIcon(guild));
 
